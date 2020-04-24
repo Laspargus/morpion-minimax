@@ -93,10 +93,7 @@ class Morpion {
       for (let j = 0; j < 3; j++) {
         if (this.map[i][j] == "EMPTY") {
           this.map[i][j] = this.ia;
-          let score = this.minimax(this.map, false);
-          this.finish = false;
-          console.log(score);
-          this.map[i][j] = "EMPTY";
+          let score = this.minimax(this.map.slice(), false);
           if (score > bestScore) {
             bestScore = score;
             move = { i, j };
@@ -162,8 +159,7 @@ class Morpion {
         for (let j = 0; j < 3; j++) {
           if (map[i][j] == "EMPTY") {
             map[i][j] = this.ia;
-            let score = this.minimax(map, false);
-            map[i][j] = "EMPTY";
+            let score = this.minimax(this.map.slice(), false);
             bestScore = Math.max(score, bestScore);
           }
         }
@@ -175,8 +171,7 @@ class Morpion {
         for (let j = 0; j < 3; j++) {
           if (map[i][j] == "EMPTY") {
             map[i][j] = this.player;
-            let score = this.minimax(map, true);
-            map[i][j] = "EMPTY";
+            let score = this.minimax(this.map.slice(), true);
             bestScore = Math.min(score, bestScore);
           }
         }
