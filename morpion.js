@@ -107,8 +107,17 @@ class Morpion {
     this.fillGrid(move.i, move.j, this.ia);
   };
 
-  virtualChecking = () => {
-    let state = "tie";
+  virtualChecking = (map) => {
+    let state = "";
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (map[i][j] == "EMPTY") {
+          state = "pending";
+          return state;
+        }
+      }
+    }
+
     const one = this.map[0][0];
     const two = this.map[0][1];
     const three = this.map[0][2];
@@ -118,6 +127,7 @@ class Morpion {
     const seven = this.map[2][0];
     const eight = this.map[2][1];
     const nine = this.map[2][2];
+
     if (
       (one === two && one === three && one != "EMPTY") ||
       (four === five && four === six && four != "EMPTY") ||
@@ -129,17 +139,20 @@ class Morpion {
       (three === six && three === nine && three != "EMPTY")
     ) {
       state = "winner";
+    } else {
+      state = "tie";
     }
     return state;
   };
 
-  minimax = (map, depth, tryToWin) => {
-    let result = this.virtualChecking();
-    if (tryToWin == true && result == "winner") {
+  minimax = (map, tryToWin) => {
+    let state = this.virtualChecking(map);
+    console.log(state);
+    if (tryToWin == true && state == "winner") {
       return 10;
-    } else if (tryToWin != true && result == "winner") {
+    } else if (tryToWin != true && state == "winner") {
       return -10;
-    } else {
+    } else if (state == "tie") {
       return 0;
     }
 
@@ -173,65 +186,10 @@ class Morpion {
   };
 }
 
-const morpion = new Morpion("J2");
+const morpion = new Morpion("J1");
 
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-// minimax = (map, depth, tryToWin) => {
-//   if (tryToWin == true) {
-//     this.checking(this.ia);
-//     if ((this.finish = true && this.result == "loose")) {
-//       this.result = "";
-//       this.finish = false;
-//       return 1;
-//     } else if ((this.finish = true && this.result == "tie")) {
-//       this.result = "";
-//       this.finish = false;
-//       return 0;
-//     }
-//   } else {
-//     this.checking(this.player);
-//     if ((this.finish = true && this.result == "win")) {
-//       this.result = "";
-//       this.finish = false;
-//       return -1;
-//     } else if ((this.finish = true && this.result == "tie")) {
-//       this.result = "";
-//       this.finish = false;
-//       return 0;
-//     }
-//   }
-
-//   if (tryToWin == true) {
-//     let bestScore = -Infinity;
-//     for (let i = 0; i < 3; i++) {
-//       for (let j = 0; j < 3; j++) {
-//         if (map[i][j] == "EMPTY") {
-//           map[i][j] = this.ia;
-//           let score = this.minimax(map, false);
-//           map[i][j] = "EMPTY";
-//           bestScore = Math.max(score, bestScore);
-//         }
-//       }
-//     }
-//     return bestScore;
-//   } else {
-//     let bestScore = Infinity;
-//     for (let i = 0; i < 3; i++) {
-//       for (let j = 0; j < 3; j++) {
-//         if (map[i][j] == "EMPTY") {
-//           map[i][j] = this.player;
-//           let score = this.minimax(map, true);
-//           map[i][j] = "EMPTY";
-//           bestScore = Math.min(score, bestScore);
-//         }
-//       }
-//     }
-//     return bestScore;
-//   }
-// };
-// }
