@@ -89,26 +89,35 @@ class Morpion {
   iaTurn = () => {
     let bestScore = -Infinity;
     let move;
+
+    console.log("la vrai map", this.map);
+
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (this.map[i][j] == "EMPTY") {
-          this.map[i][j] = this.ia;
-          let score = this.minimax(this.map.slice(), false);
+          let virtualmap = this.map.slice();
+          virtualmap[i][j] = this.ia;
+          console.log("la map virtuelle", virtualmap);
+          let score = this.minimax(virtualmap, false);
+          console.log("retour de score dans ma boucle iaTurn", score);
           if (score > bestScore) {
             bestScore = score;
             move = { i, j };
+            console.log("move i et j dans la boucle iA Turn", move);
           }
         }
       }
     }
+    console.log("retour de score iaTurn", bestScore);
+    console.log("move i et j das iaTurn", move);
     this.fillGrid(move.i, move.j, this.ia);
   };
 
-  virtualChecking = (map) => {
+  virtualChecking = (virtualmap) => {
     let state = "";
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        if (map[i][j] == "EMPTY") {
+        if (virtualmap[i][j] == "EMPTY") {
           state = "pending";
           return state;
         }
@@ -142,8 +151,8 @@ class Morpion {
     return state;
   };
 
-  minimax = (map, tryToWin) => {
-    let state = this.virtualChecking(map);
+  minimax = (virtualmap, tryToWin) => {
+    let state = this.virtualChecking(virtualmap);
     console.log(state);
     if (tryToWin == true && state == "winner") {
       return 10;
@@ -157,9 +166,9 @@ class Morpion {
       let bestScore = -Infinity;
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          if (map[i][j] == "EMPTY") {
-            map[i][j] = this.ia;
-            let score = this.minimax(this.map.slice(), false);
+          if (virtualmap[i][j] == "EMPTY") {
+            virtualmap[i][j] = this.ia;
+            let score = this.minimax(virtualmap.slice(), false);
             bestScore = Math.max(score, bestScore);
           }
         }
@@ -169,9 +178,9 @@ class Morpion {
       let bestScore = Infinity;
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          if (map[i][j] == "EMPTY") {
-            map[i][j] = this.player;
-            let score = this.minimax(this.map.slice(), true);
+          if (virtualmap[i][j] == "EMPTY") {
+            virtualmap[i][j] = this.player;
+            let score = this.minimax(virtualmap.slice(), true);
             bestScore = Math.min(score, bestScore);
           }
         }
