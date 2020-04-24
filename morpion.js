@@ -3,7 +3,6 @@ class Morpion {
     this.player = player;
     this.ia = player == "J1" ? "J2" : "J1";
     this.map = [];
-    this.result = "";
     for (let i = 0; i < 3; i++) {
       this.map[i] = [];
       for (let j = 0; j < 3; j++) {
@@ -68,19 +67,17 @@ class Morpion {
       this.finish = true;
       if (player == this.ia) {
         document.getElementById("win").textContent = "L'IA a gagné !";
-        this.result = "loose";
       } else if (player == this.player) {
         document.getElementById("win").textContent = "Tu as battu l'IA !";
-        this.result = "win";
       }
     } else if (this.checkDraw()) {
       document.getElementById("win").textContent = "Vous êtes à égalité";
-      this.finish = "tie";
     }
   };
 
   playerTurn = (x, y) => {
     if (this.finish) return;
+    console.log("je suis dans le palyerTurn", this.map);
     if (!this.fillGrid(x, y, this.player))
       return alert("La case n'est pas vide");
     else if (!this.finish) this.iaTurn();
@@ -91,15 +88,19 @@ class Morpion {
     let move;
 
     console.log("la vrai map", this.map);
+    const virtualmap = this.map.slice();
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        if (this.map[i][j] == "EMPTY") {
-          let virtualmap = this.map.slice();
+        if (virtualmap[i][j] == "EMPTY") {
           virtualmap[i][j] = this.ia;
+          console.log(virtualmap);
           console.log("la map virtuelle", virtualmap);
+
           let score = this.minimax(virtualmap, false);
+
           console.log("retour de score dans ma boucle iaTurn", score);
+
           if (score > bestScore) {
             bestScore = score;
             move = { i, j };
@@ -108,6 +109,7 @@ class Morpion {
         }
       }
     }
+
     console.log("retour de score iaTurn", bestScore);
     console.log("move i et j das iaTurn", move);
     this.fillGrid(move.i, move.j, this.ia);
@@ -153,7 +155,6 @@ class Morpion {
 
   minimax = (virtualmap, tryToWin) => {
     let state = this.virtualChecking(virtualmap);
-    console.log(state);
     if (tryToWin == true && state == "winner") {
       return 10;
     } else if (tryToWin != true && state == "winner") {
@@ -191,9 +192,4 @@ class Morpion {
 }
 
 const morpion = new Morpion("J1");
-
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+console.log(morpion.map);
